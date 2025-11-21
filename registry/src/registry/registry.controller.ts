@@ -1,4 +1,4 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, NotFoundException } from '@nestjs/common';
 import { ConsulService } from '../consul/consul.service';
 
 @Controller('registry')
@@ -106,6 +106,38 @@ export class RegistryController {
             return {
                 success: true,
                 ...info,
+            };
+        } catch (error: any) {
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
+    }
+
+    @Post('register')
+    async registerService(@Body() serviceConfig: any) {
+        try {
+            await this.consulService.registerService(serviceConfig);
+            return {
+                success: true,
+                message: `Service ${serviceConfig.name} registered successfully`,
+            };
+        } catch (error: any) {
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
+    }
+
+    @Delete('deregister/:serviceId')
+    async deregisterService(@Param('serviceId') serviceId: string) {
+        try {
+            await this.consulService.deregisterService(serviceId);
+            return {
+                success: true,
+                message: `Service ${serviceId} deregistered successfully`,
             };
         } catch (error: any) {
             return {

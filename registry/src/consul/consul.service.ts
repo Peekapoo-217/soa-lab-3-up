@@ -142,6 +142,37 @@ export class ConsulService {
         }
     }
 
+    async registerService(serviceConfig: any): Promise<void> {
+        const serviceId = `${serviceConfig.name}-${serviceConfig.port}`;
+        
+        const registration = {
+            id: serviceId,
+            name: serviceConfig.name,
+            address: serviceConfig.host || 'localhost',
+            port: serviceConfig.port,
+            tags: serviceConfig.tags || [],
+            check: serviceConfig.check,
+        };
+
+        try {
+            await this.consul.agent.service.register(registration);
+            this.logger.log(`Service registered: ${serviceId}`);
+        } catch (error: any) {
+            this.logger.error(`Failed to register service: ${error.message}`);
+            throw error;
+        }
+    }
+
+    async deregisterService(serviceId: string): Promise<void> {
+        try {
+            await this.consul.agent.service.deregister(serviceId);
+            this.logger.log(`Service deregistered: ${serviceId}`);
+        } catch (error: any) {
+            this.logger.error(`Failed to deregister service: ${error.message}`);
+            throw error;
+        }
+    }
+
     getConsulClient(): Consul.Consul {
         return this.consul;
     }

@@ -1,22 +1,15 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
-import { ConsulService } from '../consul/consul.service';
+import { CreateOrderDto } from '../entities/dto/create-order.dto';
+import { UpdateOrderDto } from '../entities/dto/update-order.dto';
+import { OrderStatus } from '../entities/Order';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export enum OrderStatus {
-    PENDING = 'PENDING',
-    CONFIRMED = 'CONFIRMED',
-    PROCESSING = 'PROCESSING',
-    SHIPPED = 'SHIPPED',
-    DELIVERED = 'DELIVERED',
-    CANCELLED = 'CANCELLED',
-}
+export { OrderStatus };
 
-interface OrderItem {
+interface OrderItemData {
     id: number;
     productId: number;
     productName: string;
@@ -25,14 +18,14 @@ interface OrderItem {
     subtotal: number;
 }
 
-interface Order {
+interface OrderData {
     id: number;
     userId: number;
     status: OrderStatus;
     totalAmount: number;
     shippingAddress?: string;
     notes?: string;
-    items: OrderItem[];
+    items: OrderItemData[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -40,14 +33,13 @@ interface Order {
 @Injectable()
 export class OrdersService {
     private readonly dataPath = path.join(__dirname, '..', 'data', 'orders.json');
-    private productServiceUrl = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3001';
+    private readonly productServiceUrl = process.env.PRODUCT_SERVICE_URL || 'http://localhost:3001';
 
     constructor(
         private readonly httpService: HttpService,
-        private readonly consulService: ConsulService,
     ) { }
 
-    private readData(): Order[] {
+    private readData(): OrderData[] {
         try {
             const data = fs.readFileSync(this.dataPath, 'utf-8');
             return JSON.parse(data);
@@ -56,20 +48,28 @@ export class OrdersService {
         }
     }
 
-    private writeData(orders: Order[]): void {
+    private writeData(orders: OrderData[]): void {
         fs.writeFileSync(this.dataPath, JSON.stringify(orders, null, 2));
     }
 
     private async getProductServiceUrl(): Promise<string> {
-        const serviceUrl = await this.consulService.discoverService('product-service');
-        return serviceUrl || this.productServiceUrl;
+        try {
+            const registryUrl = process.env.REGISTRY_URL || 'http://localhost:8600';
+            const response = await this.httpService.get(`${registryUrl}/registry/discover/product-service`).toPromise();
+            if (response?.data?.success && response.data.url) {
+                return response.data.url;
+            }
+        } catch (error: any) {
+            console.warn(`Failed to discover product-service via registry: ${error.message}`);
+        }
+        return this.productServiceUrl;
     }
 
-    async findAll(): Promise<Order[]> {
+    async findAll(): Promise<OrderData[]> {
         return this.readData();
     }
 
-    async findOne(id: number): Promise<Order> {
+    async findOne(id: number): Promise<OrderData> {
         const orders = this.readData();
         const order = orders.find(o => o.id === id);
         if (!order) {
@@ -78,13 +78,13 @@ export class OrdersService {
         return order;
     }
 
-    async findByUser(userId: number): Promise<Order[]> {
+    async findByUser(userId: number): Promise<OrderData[]> {
         const orders = this.readData();
         return orders.filter(o => o.userId === userId);
     }
 
-    async create(createOrderDto: CreateOrderDto): Promise<Order> {
-        const orderItems: OrderItem[] = [];
+    async create(createOrderDto: CreateOrderDto): Promise<OrderData> {
+        const orderItems: OrderItemData[] = [];
         let totalAmount = 0;
         let itemIdCounter = 1;
 
@@ -102,7 +102,7 @@ export class OrdersService {
                     );
                 }
 
-                const orderItem: OrderItem = {
+                const orderItem: OrderItemData = {
                     id: itemIdCounter++,
                     productId: product.id,
                     productName: product.name,
@@ -124,7 +124,7 @@ export class OrdersService {
         const orders = this.readData();
         const newId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1;
 
-        const order: Order = {
+        const order: OrderData = {
             id: newId,
             userId: createOrderDto.userId,
             status: OrderStatus.PENDING,
@@ -141,7 +141,7 @@ export class OrdersService {
         return order;
     }
 
-    async updateStatus(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
+    async updateStatus(id: number, updateOrderDto: UpdateOrderDto): Promise<OrderData> {
         const orders = this.readData();
         const index = orders.findIndex(o => o.id === id);
 
@@ -177,7 +177,7 @@ export class OrdersService {
         this.writeData(orders);
     }
 
-    async cancelOrder(id: number): Promise<Order> {
+    async cancelOrder(id: number): Promise<OrderData> {
         const orders = this.readData();
         const index = orders.findIndex(o => o.id === id);
 
