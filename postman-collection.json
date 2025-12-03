@@ -49,6 +49,20 @@
               "path": ["health"]
             }
           }
+        },
+        {
+          "name": "Report Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["health"]
+            }
+          }
         }
       ]
     },
@@ -304,6 +318,405 @@
       ]
     },
     {
+      "name": "Report Service",
+      "item": [
+        {
+          "name": "Get All Order Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/orders/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Order Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/reports/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get All Product Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/products/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Product Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_report_id\": 1,\n  \"product_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complete Purchase Workflow",
+      "item": [
+        {
+          "name": "Step 1: View Available Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Step 2: Complete Purchase (Full Workflow)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Nguyen Van A\",\n  \"customer_email\": \"nguyenvana@example.com\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"product_id\": 5,\n      \"quantity\": 1\n    }\n  ],\n  \"shipping_address\": \"123 Nguyen Hue, District 1, Ho Chi Minh City\",\n  \"notes\": \"Please deliver before 5 PM\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/workflow/purchase",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["workflow", "purchase"]
+            }
+          }
+        },
+        {
+          "name": "Step 3: View Order Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Step 4: View Product Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        },
+        {
+          "name": "Step 5: Check Updated Product Stock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Manual Workflow (Step by Step)",
+      "item": [
+        {
+          "name": "1. Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "2. Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 2\n    }\n  ],\n  \"shippingAddress\": \"456 Le Loi, District 1, Ho Chi Minh City\",\n  \"notes\": \"Gift wrapping required\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "3. Update Product Stock (Manual)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 45\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/products/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Update Order Status to CONFIRMED",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/orders/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "5. Update Order Status to COMPLETED",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/orders/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "6. Create Order Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/reports/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders"]
+            }
+          }
+        },
+        {
+          "name": "7. Create Product Report (Product 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_report_id\": 1,\n  \"product_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        },
+        {
+          "name": "8. Create Product Report (Product 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_report_id\": 1,\n  \"product_id\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        },
+        {
+          "name": "9. Get All Order Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "orders"]
+            }
+          }
+        },
+        {
+          "name": "10. Get All Product Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/reports/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["reports", "products"]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Auth Service",
       "item": [
         {
@@ -375,6 +788,7 @@
     }
   ]
 }
+
 
 
 

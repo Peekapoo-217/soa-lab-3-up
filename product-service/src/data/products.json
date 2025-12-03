@@ -1,4 +1,56 @@
-[]
-
-
-
+[
+  {
+    "id": 1,
+    "name": "iPhone 15 Pro",
+    "description": "Latest iPhone with A17 Pro chip, 6.1-inch display",
+    "price": 999.99,
+    "stock": 50,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Samsung Galaxy S24",
+    "description": "Flagship Samsung phone with AI features",
+    "price": 899.99,
+    "stock": 40,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "MacBook Pro 14",
+    "description": "Apple M3 Pro chip, 14-inch Liquid Retina XDR display",
+    "price": 1999.99,
+    "stock": 30,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "Dell XPS 15",
+    "description": "Intel Core i7, 15.6-inch 4K display",
+    "price": 1599.99,
+    "stock": 25,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Sony WH-1000XM5",
+    "description": "Premium noise-canceling wireless headphones",
+    "price": 399.99,
+    "stock": 100,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "name": "iPad Pro 12.9",
+    "description": "M2 chip, 12.9-inch Liquid Retina XDR display",
+    "price": 1099.99,
+    "stock": 35,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+]

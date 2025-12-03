@@ -88,6 +88,7 @@ export class OrdersService {
         let totalAmount = 0;
         let itemIdCounter = 1;
 
+        // Step 1: Validate all products and check stock
         for (const item of createOrderDto.items) {
             try {
                 const productServiceUrl = await this.getProductServiceUrl();
@@ -121,6 +122,29 @@ export class OrdersService {
             }
         }
 
+        // Step 2: Update product stock for each item
+        const productServiceUrl = await this.getProductServiceUrl();
+        for (const item of orderItems) {
+            try {
+                // Get current product to calculate new stock
+                const productResponse = await firstValueFrom(
+                    this.httpService.get(`${productServiceUrl}/products/${item.productId}`)
+                );
+                const product = productResponse.data;
+                const newStock = product.stock - item.quantity;
+
+                // Update product stock
+                await firstValueFrom(
+                    this.httpService.put(`${productServiceUrl}/products/${item.productId}`, {
+                        stock: newStock
+                    })
+                );
+            } catch (error: any) {
+                throw new BadRequestException(`Failed to update stock for product ${item.productName}: ${error.message}`);
+            }
+        }
+
+        // Step 3: Create the order
         const orders = this.readData();
         const newId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1;
 
